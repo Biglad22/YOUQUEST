@@ -751,7 +751,7 @@
                         once you select your theme, you will be presented 20 different questions from your selected. 
                     </li>
                     <li>
-                        you have 60 seconds to answer all 20 questions.
+                        you have 2 minutes 30 seconds to answer all 20 questions.
                     </li>
                     <li>
                         timer will automatically start when you select your theme.
@@ -843,6 +843,10 @@
                         34.r
                     </h1>
                 </div>
+                <!-- <p class="score-remark" style="text-transform:capitalize; color:var(--text-b-m)">
+                    you did 
+                    <span id="score-remark"></span>
+                </p> -->
                 <p class="score-calc">
                     <span>note:</span>
                     score was calculated by dividing number of correct answers by time elapsed
@@ -918,7 +922,8 @@
     const updateReport = document.querySelector('.update-report');
     const pagination = document.querySelector('.pagination-content');
     const spotifyPlayer = document.querySelector('.embed-music');
-    
+    const scoreRemark = document.getElementById('score-remark');
+
     //set default volume
     spotifyPlayer.volume = 0.2;
 
@@ -937,7 +942,7 @@
     var points = {};
 
     //timer max time
-    var time = 60;
+    var time = 150;
 
     //time elapsed
     var timeElp;
@@ -1061,9 +1066,20 @@
                 //displays player's score 
                 playerScore.innerText = totalScore;
 
+                // //user score remark
+                // if (totalScore < 1){
+                //     scoreRemark.innerText = "i've seen better scores";
+                // }else if (2 > totalScore >= 1 ){
+                //     scoreRemark.innerText = 'you did good';
+                // }else if (totalScore > 2 ){
+                //     scoreRemark.innerText = 'you did very well, you must be smart';
+                // }
+
             }else{
                 //displays player's score 
                 playerScore.innerText = 0;
+                //user score remark
+                // scoreRemark.innerText = "i've seen better scores";
             }
 
             //display score card
