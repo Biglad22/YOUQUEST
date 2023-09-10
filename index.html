@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="assets/css/uicons-regular-rounded.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>YOUQUEST - Test yourself</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+        :root{
+            --start-btn:rgba(0,0,0,1);
+            --cards:rgba(0,0,0,0.020);
+            --cards2:rgba(255,255,255,1);
+            --pro-card:rgba(255,0,0,0.05);
+            --green-card:rgba(9,255,0,0.1);
+            --shadow:rgba(0,0,0,0.05);
+
+            /*black text*/
+            --text-t-b:rgba(0,0,0,1);
+            --text-b-h:rgba(0,0,0,0.8);
+            --text-b-m:rgba(0,0,0,0.6);
+            --text-b-l:rgba(0,0,0,0.3);
+            
+            /*white text*/
+            --text-t-w:rgba(255,255,255,1);
+            --text-w-h:rgba(255,255,255,0.8);
+            --text-w-m:rgba(255,255,255,0.6);
+            --text-w-l:rgba(255,255,255,0.3);
+
+            /*pro red text */
+            --pro-text-h:rgba(200,0,0,0.8);
+            --pro-text-m:rgba(200,0,0,0.6);
+            --pro-text-l:rgba(200,0,0,0.3);
+            --opt-btn:rgba(200,200,250,0.1);
+            --hov-opt-btn:rgba(200,200,250,0.9);
+
+            /*pro green text */
+            --green-text-h:rgba(9,255,0,0.8);
+            --green-text-m:rgba(9,255,0,0.6);
+            --green-text-l:rgba(9,255,0,0.3);
+        }
+
+        h1, h2, h3, h4, h5, h6{
+            font-family: 'Rubik', sans-serif;
+        }
+        p, a, button{
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .body{
+            background-color:white;
+        }
+        /*stops body from scrolling when score-card displays*/
+        .stop-body-scroll{
+            height:100vh;
+            max-height:100vh;
+            overflow:hidden;
+        }
+
+        button{
+            cursor:pointer;
+        }
+
+        /* timer and start-button section */
+        /*counter down bar*/
+        .counter-section{
+            /*border-bottom:0.1rem solid rgba(0,0,0,0.05);*/
+            width:100%;
+            position:sticky;
+            top:0;
+            padding:1rem calc(((100vw - 80vw) / 2) + 1rem);
+            display:flex;
+            backdrop-filter:blur(0.2rem);
+        }
+        .counter{
+            padding:0.5rem 0;
+            opacity:1;
+            font-size:1.5rem;
+            transition:all 0.5s;
+            flex:0 0 50%;
+            color:var(--text-b-h);
+        }
+
+        /*counter animation class to apply count down effect*/
+        .animate{
+            animation: 1s count ease-in-out;
+        }
+
+        /*start button*/
+        #start-button{
+            font-size:1rem;
+            padding: 0.5rem 1rem;
+            width:fit-content;
+            flex:0 0 50%;
+            color:var(--text-t-w);
+            border:0.2rem solid transparent;
+            border-radius:0.4rem;
+            background-color:var(--start-btn);
+            text-transform:capitalize;
+            transition:all 0.5s;
+        } 
+        /*start-button disability*/
+        #start-button[disabled = 'disabled']{
+            color:var(--text-b-l);
+            background-color:var(--cards);
+            transition:all 0.5s;
+        } 
+        
+        /*counter animation*/
+        @keyframes count{
+            from{
+                opacity:0.25;
+                font-size:1.5rem;
+                transition:all 0.3s;
+            }
+            to{
+                opacity:1;
+                font-size:1.5rem;
+                transition:all 0.3s;
+            }
+        }
+        /* main body container section */
+        /*body wrapper*/
+        .main-body-wrapper{
+            transition:all 0.5s;
+        }
+
+        /*main body*/
+        .main-body{
+            width:100%;
+            display:none;
+            flex-wrap:wrap;
+            padding:1rem;
+            gap:1rem;
+            margin: 0 auto;
+            overflow:hidden;
+            position:relative;
+            transition:all 0.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) 0s;
+        }
+
+        /* theme selection section */
+        /*theme selectors*/
+        .theme-selectors{
+            width:100%;
+            padding:1rem;
+            margin:0 auto;
+        }
+        .selectors{
+            display:flex;
+            flex-wrap:wrap;
+            width:100%;
+            gap:0.5rem;
+        }
+
+        .selectors button{
+            flex:1 1 calc((100% - (4 * 0.8rem)) / 5);
+            padding:1rem;
+            border-radius:0.25rem;
+            background-color:transparent;
+            border: 0.15rem dashed var(--text-b-l);
+            color:var(--text-b-l);
+            text-transform:capitalize;
+            font-weight:600;
+            font-size:1rem;
+            transition:all 1s;
+        } 
+
+        .selectors button:hover{
+            border: 0.15rem solid var(--start-btn);
+            background-color:var(--start-btn);
+            transition:all 1s;
+            color:var(--text-t-w);
+        }
+
+        /*active theme selector*/
+        .selectors .active{
+            border: 0.15rem solid var(--start-btn);
+            transition:all 1s;
+            color:var(--text-t-b);
+            background-color:var(--cards);
+        }
+
+        .instructions{
+            padding:2rem 1rem;
+        }
+
+        .instructions ol li{
+            padding: 0.5rem 0;
+        } 
+
+        /* main question section */
+        /*pagination section*/
+        .pagination{
+            width:100%;
+            height:0.4rem;
+            padding:0.1rem;
+            border-radius:0.1rem;
+            background-color:var(--cards);
+        }
+        .pagination-content{
+            width:0%;
+            height:100%;
+            background-color:var(--green-text-l);
+            transition: all 0.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) 0s;
+        }
+
+        /*main question container*/
+        .question-container{
+            flex:0 0 100%;
+            padding:1rem;
+            border-radius:0.5rem;
+            background-color:var(--cards);
+            height:45vh;
+        }
+
+        /*question wrapped for overflow*/
+        .question-wrapper{
+            max-height:100%;
+            overflow:auto;
+        }
+
+        /*question header*/
+        .header{
+            color:var(--text-b-h);
+            padding: 0.5rem 0;
+            font-size:1.5rem;
+            text-transform:capitalize;
+        }
+
+        /*actual question*/
+        .question{
+            padding:0.5rem 0;
+            font-size:1rem;
+            color:var(--text-b-h);
+            user-select:none;
+            -moz-user-select:none;
+            -webkit-user-select:none;
+            -ms-user-select:none;
+        }
+
+        /*question options container*/
+        .question-opts{
+            padding:0 1rem;
+            color:var(--text-b-h);
+            font-weight:700;
+        }
+
+        /*main option list*/
+        .opts-list{
+            list-style:upper-alpha;
+            padding:0.5rem;
+        }
+        .opts-list li{
+            text-transform:capitalize;
+            padding:0.5rem 0;
+            font-size:0.75rem;
+        }
+
+        /*options button container*/
+        .buttons-container{
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:space-between;
+            width:100%;
+        }
+
+        /*options button*/
+        .buttons-container button{
+            font-size:1.5rem;
+            text-transform:capitalize;
+            padding:0.5rem;
+            color:var(--text-b-h);
+            border:0.2rem solid transparent;
+            border-radius:0.2rem;
+            background-color:var(--opt-btn);
+            transition:all 1s;
+        }
+
+        /*options button*/
+        .buttons-container button:hover{
+            color:var(--text-t-w);
+            background-color:var(--start-btn);
+            transition:all 1s;
+        }
+
+
+        /*options button*/
+        .options{
+            display:flex;
+            flex-wrap:wrap;
+            gap:0.5rem;
+        }
+
+        /*hint section*/
+        .hint-container, .answer-container{
+            background-color:var(--pro-card);
+            padding:0.5rem 0.5rem;
+            border-radius:1.5;
+            flex:0 0 fit-content;
+            transition:all 0.5s;
+        }
+
+        /*increases width of the hint container*/
+        .hint-opened{
+            flex:0 0 100%; 
+            transition:all 0.5s;
+        }
+
+        /*hint or answer section header*/
+        .hint-header, .answer-header{
+            color:var(--pro-text-h);
+            background-color:var(--pro-card);
+            font-size:1rem;
+            text-align:left;
+            border:none;
+            text-transform:capitalize;
+            padding:0.5rem;
+        }
+        .hint-info, .answer-info{
+            font-size:1rem;
+            color:var(--text-b-m);
+            padding:0.5rem;
+            display:none;
+        }
+
+        /*displays main hint or answer*/
+        .hint-opened .hint-info, .hint-opened .answer-info{
+            display:block;
+        }
+
+        /*show answer section*/
+        .answer-container{
+            background-color:var(--green-card);
+        }
+        .answer-header{
+            color:var(--green-text-h);
+            background-color:var(--green-card);
+        }
+
+        /* score card and developer card section */
+        /*score section*/
+        .final-score{
+            visibility:hidden;
+            display:none;
+            width:100%;
+            height:calc(100vh + 1rem);
+            padding:1rem;
+            padding-top: calc(100vh - 80vh);
+            margin: 0 auto;
+            position:absolute;
+            bottom:calc(0% - 1rem);
+            left:50%;
+            transform:translateX(-50%);
+            z-index:5;
+            transition:all 0.5s;
+        }
+
+        /* stops body scrolling after score is displayed */
+        .stop-scrolling{
+           overflow:hidden; 
+           max-height:100vh;
+           height:100vh;
+           background-color:var(--cards);
+           filter:blur(0.1rem);
+           transition:all 0.25s;
+        }
+
+        /*changes score card and developer card display*/
+        .show-score{
+            visibility:visible !important;
+            display:block !important;
+            transition:all 0.25s !important;
+            animation: score-card 1s ease-in-out !important;
+        }
+
+        /* score card animation */
+        @keyframes score-card{
+            from{
+                bottom:-100%;
+                transition:all 0.25s; 
+                visibility:hidden;
+                display:none;
+            }
+            to{
+                bottom:calc(0% - 1rem);
+                transition:all 0.25s;  
+                visibility:visible;
+                display:block;
+            }
+        }
+
+        /*final-score actual container*/
+        .score-container{
+            background-color:var(--cards2);
+            padding:1.5rem 1.5rem;
+            text-align:center;
+            border-radius:2rem 2rem 0 0;
+            box-shadow: 0 0 2rem var(--shadow);
+            height:100%;
+            display:flex;
+            align-items:space-between;
+            justify-content:center;
+        }
+
+        /*score card wrapper*/
+        .score-wrap{
+            display:flex;
+            flex-wrap:wrap;
+            flex-flow: column;
+            align-items:center;
+            align-items:center;
+            justify-content:center;
+            gap:1.5rem;
+        }
+        .main-score{
+            width:fit-content;
+            aspect-ratio:1/1;
+            background-color:var(--start-btn);
+            color:var(--text-t-w);
+            padding:1.5rem;
+            box-sizing:content-box;
+            border-radius:50%;
+            display:flex;
+            flex-wrap:wrap;
+            align-items:center;
+            justify-content:center;
+        }
+
+        .score-header{
+            width:fit-content;
+            text-transform:capitalize;
+        }
+
+        .score-calc{
+            font-size:1.2rem;
+            color:var(--text-b-m);
+        }
+        .score-calc span{
+            color:var(--text-b-h);
+            font-weight:600;
+            text-transform:capitalize;
+        }
+
+        /*restarts the game*/
+        .restart-button{
+            border:0.2rem solid transparent; 
+            font-size:1rem;
+            padding: 0.5rem 1rem;
+            width:fit-content;
+            color:var(--text-t-b);
+            border-radius:0.4rem;
+            text-transform:capitalize;
+            transition:all 0.5s;
+        }
+
+        /*restarts the game*/
+        .restart-button:hover{
+            border:0.2rem solid transparent; 
+            font-size:1rem;
+            padding: 0.5rem 1rem;
+            width:fit-content;
+            color:var(--text-t-w);
+            background-color:var(--start-btn);
+            border-radius:0.4rem;
+            text-transform:capitalize;
+            transition:all 0.5s;
+        }
+
+        /*see dev button*/
+        .dev-btn, .change-btn{
+            border:0.2rem solid transparent; 
+            font-size:1rem;
+            padding: 0.5rem 1rem;
+            width:fit-content;
+            color:var(--text- t-b);
+            border-radius:0.4rem;
+            text-transform:capitalize;
+            transition:all 0.5s;
+            background-color:unset;
+        }
+
+        .dev-btn:hover, .change-btn:hover{
+            border:0.2rem solid var(--start-btn);  
+            transition:all 0.5s;
+        }
+
+        /*developer's profile*/
+        .developer-sec{
+            visibility:hidden;
+            display:none;
+            padding:1rem;  
+            position:absolute;
+            width:100vw;
+            bottom:calc(0% - 1rem);
+            height:80vh;
+            transition:all 0.25s;
+            animation: score-card 1s ease-in-out;
+        }
+
+        .main-developer-wrapper{
+            display:flex;
+            flex-direction:column;
+            flex-wrap:wrap;
+            gap:1rem;
+            justify-content:center;
+            text-align:center;
+            background-color:var(--cards2);
+            border-radius:2rem 2rem 0 0;
+            box-shadow: 0 0 2rem var(--shadow);
+            padding:1.5rem;
+            height:100%;
+        }
+
+        .developer-pic{
+            max-height:25%;
+            width:auto;
+            border-radius:0.5rem;
+            border:0.2rem solid var(--shadow);
+            margin:0 auto;
+        }
+
+        .developer-name{
+            font-size:1.5rem;
+            color:var(--text-b-h);
+            font-weight:800;
+            text-transform:capitalize; 
+        }
+
+        .previous-work{
+            padding:1rem 0;
+            display:flex;
+            flex-direction:column;
+            flex-wrap:wrap;
+            align-items:center;
+            text-align:center;
+            gap:1rem;
+        }
+
+        .previous-work a{
+            font-size:1rem;
+            color:var(--start-btn);
+            text-decoration:none;
+            font-weight:600;
+            text-transform:capitalize;
+            padding: 0.5rem 1rem;
+            cursor:pointer;
+            max-width:fit-content;
+        }
+
+        /*hover effect for dev profile links */
+        .previous-work a:hover{
+            color:var(--text-b-m);
+        }
+
+        .developer-role{
+            font-size:1rem;
+            color:var(--text-b-m);
+            text-transform:capitalize;
+        }
+
+        /* return button to score card */
+        .back-btn{
+            border:0.2rem solid var(--start-btn); 
+            font-size:1rem;
+            padding: 0.5rem 1rem;
+            width:fit-content;
+            color:var(--text-t-b);
+            border-radius:0.4rem;
+            text-transform:capitalize;
+            transition:all 0.5s;
+            background-color:unset;
+            max-width:fit-content;
+            margin:0 auto;
+        }
+
+        /*update report to inform users about question update*/
+        .update-report{
+            display:none;
+            background-color:var(--green-card);
+            font-size:1.5rem;
+            text-transform:capitalize;
+            padding:0.75rem;
+            border-radius:0.4rem;
+            opacity:1;  
+            width:100%;
+            max-height:0;
+            overflow:hidden;
+            transition:all 0.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) 0s;
+        }
+
+        .update-hidder{
+            display:block;
+            max-height:fit-content;
+        }
+        .animation{
+            transition:all 0.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) 0s;
+            animation: 1s update-off linear;
+        }
+
+        .update-header{
+            color:var(--green-text-h);
+            padding:0.5rem;
+            text-transform:capitalize;
+        }
+
+        .update-report h6{
+            color:var(--text-b-m);
+            padding:0.5rem;
+            text-transform:capitalize;
+        }
+
+        /*animation for question update*/
+        @keyframes update-off {
+            from{
+                opacity:1;
+                transition:all 0.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) 0s;
+                height:fit-content;
+                max-height:fit-content !important;
+            }
+            to{
+                opacity:0;
+                max-height:0rem !important;
+                transition:all 0.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) 0s;
+            }
+        }
+
+        /* background music section */
+        .embed-music{
+            position:fixed;
+            bottom:0%;
+            left:50%;
+            transform:translateX(-50%);
+            z-index:10;
+            max-width:100%;
+            visibility:hidden;
+        }
+
+        /* media queries for larger screens */
+        @media only screen and (max-width:480px){
+            HTML{
+                font-size: 12px;
+            }
+        }
+
+        @media only screen and (min-width: 575px) and (max-width: 1024px){
+
+            .counter-section, .theme-selectors{
+                padding:2rem 4rem;
+            }
+
+            #start-button{
+                flex:0 0 auto;
+                justify-self:end;
+            }
+
+            .counter{
+                flex:1;
+            }
+
+            .main-body, .final-score, .developer-sec{
+                padding-left: 4rem;
+                padding-right: 4rem; 
+            }
+            .embed-music {
+                margin:4rem;
+            }
+
+        }
+
+        @media only screen and (max-width:574px){
+            .counter-section, .theme-selectors{
+                padding:1rem 1rem;
+            }
+            .embed-music{
+                margin:1rem auto;
+            }
+        }
+
+        @media only screen and (min-width:1025px){
+            HTML{
+                font-size: 18px;
+            }
+
+            #start-button{
+                flex:0 0 auto;
+                justify-self:end;
+            }
+
+            .counter{
+                flex:1;
+            }
+
+            .main-body, .final-score, .theme-selectors, .embed-music{
+                width:80%;
+            }
+
+            .developer-sec{
+                width:100%;
+                padding-left:calc(((100% - 80%) / 2) + 1rem);
+                padding-right:calc(((100% - 80%) / 2) + 1rem);
+            }
+            .main-developer-wrapper{
+                padding:2rem;
+            }
+
+        }
+    </style>
+</head>
+<body>
+    <header class="main-body-wrapper">
+        <!--counter header-->
+        <div class="counter-section">
+            <h6 class="counter">
+            </h6>
+            <button type="button" id="start-button" disabled="disabled">
+                start
+            </button>
+        </div>
+        <audio style="border-radius:12px" class="embed-music" controls>
+            <source src="assets\weeknds-122592.mp3" type="audio/mpeg">
+        </audio>
+
+        <!-- for question theme selection -->
+        <div class="theme-selectors">
+            <h1 class="header">
+                please select your desired theme
+            </h1>
+            <div class="selectors">
+                <button type="button" value="car" class="selector">cars</button>
+                <button type="button" value="fashion" class="selector">fashion</button>
+                <button type="button" value="geography" class="selector">geography</button>
+                <button type="button" value="history" class="selector">history</button>
+                <button type="button" value="riddle" class="selector">riddles</button>
+                <button type="button" value="sport" class="selector">sports</button>
+                <button type="button" value="mixed" class="selector">mixed</button>
+            </div>
+            <div class="instructions">
+                <h1 class="header">
+                    instructions
+                </h1>
+                <ol>
+                    <li>
+                        once you select your theme, you will be presented 20 different questions from your selected. 
+                    </li>
+                    <li>
+                        you have 60 seconds to answer all 20 questions.
+                    </li>
+                    <li>
+                        timer will automatically start when you select your theme.
+                    </li>
+                    <li>
+                        you are allowed to view the hint or answer to each question, but note that 10 seconds will be deducted from your time.
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!--main question boby-->
+        <main class="main-body" >
+
+            <div class="update-report">
+                <h5 class="update-header">update report</h5>
+                <h6>
+                    these questions were up to dated as at 28th August 2023.
+                </h6>
+            </div>
+
+            <!--question pagination-->
+            <div class="pagination">
+                <div class="pagination-content"></div>
+            </div>
+
+            <!--question container-->
+            <div class="question-container">
+                <div class="question-wrapper">
+                    <h1 class="header">Question: <Span id="question-no">1</Span></h1>
+                    <p class="question">something goes here</p>
+                    <div class="question-opts">
+                        <ol class="opts-list">
+                            <li class="opt"></li>
+                            <li class="opt"></li>
+                            <li class="opt"></li>
+                            <li class="opt"></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons-container">
+                <button id="previous-button">
+                    <i class=" fi-rr-angle-left" disabled="disabled" ></i>
+                </button>
+                <div class="options" id="anwser-opt">
+                    <button type="button" class="opt-btn" id="a">a</button>
+                    <button type="button" class="opt-btn" id="b">b</button>
+                    <button type="button" class="opt-btn" id="c">c</button>
+                    <button type="button" class="opt-btn" id="d">d</button>
+                </div>
+                <button id="next-button">
+                    <i class=" fi-rr-angle-right"></i>
+                </button>
+
+    
+            </div>
+
+            <!--question hint-->
+            <div class="hint-container">
+                <button class="hint-header">
+                    hint
+                </button>
+                <p class="hint-info">
+                    something goes here somehow
+                </p>
+            </div>
+
+            <!--question answer-->
+            <div class="answer-container">
+                <button class="answer-header">
+                    See answer
+                </button>
+                <p class="answer-info">
+                    something goes here somehow
+                </p>
+            </div>
+        </main>
+    </header>
+
+    <section class="final-score">
+        <div class="score-container">
+            <div class="score-wrap">
+                <h4 class="score-header header">
+                    you scored
+                </h4>
+                <div class="main-score">
+                    <h1 id="score">
+                        34.r
+                    </h1>
+                </div>
+                <p class="score-calc">
+                    <span>note:</span>
+                    score was calculated by dividing number of correct answers by time elapsed
+                    <br>
+                    the highest logical score you can get is 10.
+                    <br>
+                    <span>if e sure for you get am</span>
+                </p>
+                <button type="button" class="restart-button">restart</button>
+                <button type="button" class ='dev-btn'>see developer</button>
+                <button type="button" class="change-btn">change Theme</button>
+            </div>
+        </div>
+    </section>
+    <section class="developer-sec">
+        <div class="main-developer-wrapper">
+            <img src="assets\emmanuel.jpg" alt="the developer" class="developer-pic">
+            <h1 class="developer-name">aberuagba emmanuel</h1>
+            <h6 class="developer-role">front-end developer <span class="roles-divider">|</span> UX/UI designer</h6>
+            <div class="works-button-wrapper">
+                <div class="previous-work">
+                    <h1 class="header">other projects</h1>
+                    <a href="https://melodious-dusk-6c81d9.netlify.app/" target="blank" title="Starwars site">starwars universe</a>
+                    <a href="https://charming-custard-9d027d.netlify.app/" target="blank" title="NFTs site">Hopium Dao</a>
+                    <a href="https://github.com/Biglad22" target="blank" title="See more">see more</a>
+
+                </div>
+                <button type="button" class="back-btn">back</button>
+            </div>
+        </div>
+    </section>
+    
+</body>
+<script src="questions.js"></script>
+<script>
+    //prevents reload
+    window.onbeforeunload = (e) =>{
+        e.preventDefault();
+        e.returnValue = '';
+    }
+
+    //element selection
+    const counter = document.querySelector('.counter');
+    const clickBtn = document.getElementById('start-button');
+    const question = document.querySelector('.question');
+    const questionOpt = document.querySelectorAll('.opt')
+    const answerBtns = document.querySelectorAll('.opt-btn');
+    const btnA = document.getElementById('a');
+    const btnB = document.getElementById('b');
+    const btnC = document.getElementById('c');
+    const btnD = document.getElementById('d');
+    const questionNo = document.getElementById('question-no');
+    const previousQuestn = document.getElementById('previous-button');
+    const nextQuestn = document.getElementById('next-button');
+    const playerScore = document.getElementById('score');
+    const scoreCard = document.querySelector('.final-score');
+    const body = document.querySelector('.main-body-wrapper');
+    const questionBody = document.querySelector('.main-body');
+    const mainBody = document.getElementsByTagName('BODY')[0];
+    const restartBtn = document.querySelector('.restart-button');
+    const seeDevBtn = document.querySelector('.dev-btn');
+    const chngThBtn = document.querySelector('.change-btn');
+    const devCard = document.querySelector('.developer-sec');
+    const backBtn = document.querySelector('.back-btn');
+    const hintBtn = document.querySelector('.hint-header');
+    const questionHint = document.querySelector('.hint-info');
+    const hintContainer = document.querySelector('.hint-container');
+    const answerBtn = document.querySelector('.answer-header');
+    const questionAnswer = document.querySelector('.answer-info');
+    const answerContainer = document.querySelector('.answer-container');
+    const themeSelectors = document.querySelectorAll('.selector');
+    const themeSelectorWrapper = document.querySelector('.theme-selectors');
+    const updateReport = document.querySelector('.update-report');
+    const pagination = document.querySelector('.pagination-content');
+    const spotifyPlayer = document.querySelector('.embed-music');
+    
+    //set default volume
+    spotifyPlayer.volume = 0.2;
+
+    //retset audio file
+    const stop = sTTP =>{
+        sTTP.pause();
+        //sets audio back to default
+        sTTP.currentTime = 0;
+    }
+
+
+    //stores questions from selected theme
+    var selectedTheme = [];
+
+    //stores user score
+    var points = {};
+
+    //timer max time
+    var time = 60;
+
+    //time elapsed
+    var timeElp;
+
+    //change time counter
+    counter.innerText = time;
+
+    //stores player's theme selection
+    var theme;
+
+    //update report function
+    const showUpdate = () =>{
+    //report to user on the last time questions were updated
+    
+        updateReport.classList.add('update-hidder');
+        const myTimeout = setTimeout(()=>{
+            updateReport.classList.add('animation');
+        },2000);
+
+        //clears timeout with animation end
+        updateReport.onanimationend = () =>{
+            clearTimeout(myTimeout);
+            updateReport.classList.remove('update-hidder');
+            updateReport.classList.remove('animation');
+        };
+    };
+ 
+    //timer class 
+    class timer {
+        constructor(){
+            this.timeFun = null;
+        }
+        countDown(count){
+
+            //to enable reduction of count
+            let nCount = count;
+
+            var myIntervalFn = () =>{
+                    
+                //counting
+                counter.classList.add('counting');
+
+                //gets time elapse;
+                timeElp = nCount;
+
+                //get score card classlist, to check if it is displaying
+                let stopper = scoreCard.classList;
+
+                //to check if count variable is still greater than 0
+                if (nCount > 0 && !stopper.contains('show-score')){
+
+                    //changes the innertext of timer
+                    counter.innerText = nCount;
+                    counter.classList.add('animate');
+
+                    //initiates nCount down
+                    counter.onanimationend = (e) =>{
+                        counter.classList.remove('animate');
+                        nCount--;
+                    }
+
+                    //changes start button attributes
+                    clickBtn.setAttribute('disabled','disabled');
+                    clickBtn.innerText = 'Timing...';
+
+                }
+                else{
+
+                    //stops background music 
+                    stop(spotifyPlayer);
+
+                    //clear the nCount interval at the end of countdown
+                    clearInterval(this.timeFun);
+                    this.timeFun = null;
+
+                    //adds final animation effect
+                    counter.classList.add('animate');
+                    counter.innerText = 'Game Over';
+
+                    //to remove animation class 
+                    counter.onanimationend = (e) =>{
+                        counter.classList.remove('animate');
+                    };
+
+
+                    //calculates user's score
+                    const showScore = new timer;
+                    showScore.mark();
+
+                    //changes start button inner text
+                    clickBtn.innerText = 'Stopped';
+
+                };
+            }
+            this.timeFun = setInterval(function(){
+                return myIntervalFn()},1
+            );
+            
+        }
+        stopTimeout(){
+            clearInterval(this.timeFun);
+            this.timeFun = null;
+        }
+        mark(){
+            //calculate points
+            const score = Object.values(points);
+
+            //calculate player's total point
+            const point = 1 * score.length;
+
+            //checks time that elapsed
+            const remTime = time - timeElp;
+
+            if(point != 0 && remTime != 0){
+
+                //calculates player's total score
+                let totalScore = point / remTime;
+
+                totalScore = Math.ceil(totalScore);
+
+                //displays player's score 
+                playerScore.innerText = totalScore;
+
+            }else{
+                //displays player's score 
+                playerScore.innerText = 0;
+            }
+
+            //display score card
+            scoreCard.classList.add('show-score');
+
+            //stops scrolling for body
+            body.classList.add('stop-scrolling');
+            body.setAttribute('disabled','disabled');
+
+            mainBody.classList.add('stop-body-scroll');
+
+        }
+    }  
+
+    const timeClass = new timer;
+
+    //button action
+    clickBtn.onclick = (e) =>{
+
+        //initiate count down
+        timeClass.countDown(time);
+    }
+
+    //gets users selected theme
+    
+    (()=>{
+        for (i in themeSelectors){
+            themeSelectors[i].onclick = (e) => {
+
+                //stores length of selected theme;
+                let themeLength = selectedTheme.length;
+
+                // starts playing music
+                spotifyPlayer.play();
+
+                //get button that was clicked
+                let clickedBtn = e.target;
+                theme = clickedBtn.value;
+
+                //check question for theme
+                for (v in questions){
+                    if (theme !== 'mixed' && theme === questions[v].theme){
+
+                        selectedTheme.push(questions[v]);
+                        selectedTheme = selectedTheme;
+
+                    }else if (theme !== 'mixed' && questions[v].theme.includes(theme)){
+
+                        selectedTheme.push(questions[v]);
+                        selectedTheme = selectedTheme;
+
+                    }else if (theme === 'mixed'){
+
+                        const rand = (themeLength) => {
+                            if(themeLength < 20){
+
+                                //this will iterate through questions to pick random questions 
+                                let newQuest = Math.ceil(Math.random() * 100);
+
+                                //check if question already exist in selectTheme array
+                                if (!selectedTheme.includes(questions[newQuest]) && questions[newQuest] !== undefined){
+
+                                    selectedTheme.push(questions[newQuest]);
+                                    selectedTheme = selectedTheme;
+                                
+                                }else{
+
+                                    themeLength = selectedTheme.length;
+                                    rand(themeLength);
+                    
+                                }
+                            }else{
+                                //do nothing
+                            }
+                        };
+                        rand(themeLength);
+                    }
+                };
+
+                //changes button appearance on click
+                if(clickedBtn.classList.contains('active') === false){
+                    clickedBtn.classList.add('active');
+
+                    //change sections display
+                    themeSelectorWrapper.style.display = 'none';
+                    questionBody.style.display = 'flex';
+
+                    //give update to for sport theme
+                    if (theme === 'sport' || theme === 'history'){
+                        showUpdate();
+                    };
+                    questionPicker(0,theme);
+
+                    //removes activation from other buttons
+                    for(b = 0; b < themeSelectors.length; b++){
+                        if(themeSelectors[b].classList.contains('active') && themeSelectors[b] !== clickedBtn){
+                            themeSelectors[b].classList.remove('active');
+                        }else{
+                            //do nothing
+                        };
+                    }
+                }else{
+
+                    //change sections display
+                    themeSelectorWrapper.style.display = 'none';
+                    questionBody.style.display = 'flex';
+
+                    questionPicker(0,theme);
+
+                    //removes activation from other buttons
+                    for(b = 0; b < themeSelectors.length; b++){
+                        if(themeSelectors[b].classList.contains('active') && themeSelectors[b] !== clickedBtn){
+                            themeSelectors[b].classList.remove('active');
+                        }else{
+                            //do nothing
+                        };
+                    }
+                }
+                //start timer
+                timeClass.countDown(time);
+            };
+        };
+        
+        return selectedTheme;
+    })();
+
+
+   //displays questions
+    const questionPicker = (i, theme)=>{
+
+        pageNo = i;
+
+        //get question number and question 
+        ((i, theme)=>{
+
+            let themeLength = selectedTheme.length;
+
+            if (i < 20){
+
+                //question numbering 
+                questionNo.innerText = i + 1;
+                const pageNo = i + 1;
+
+                //pagination is fractioned based on number of questions
+                const pageFrac = 100 / 20;
+
+                //shows user's progrss
+                pagination.style.width = pageNo * pageFrac + '%';
+
+                //actual question text 
+                question.innerText = selectedTheme[i].question;
+
+                //displays question answer options
+                for (m in questionOpt){
+                    questionOpt[m].innerText = selectedTheme[i].options[m];
+                };
+
+                //displays question hint
+                questionHint.innerText = selectedTheme[i].hint;
+
+                //checks if hint box is open and closes it 
+                if(hintContainer.classList.contains('hint-opened') === true){
+                    hintContainer.classList.toggle('hint-opened');
+                }else if (answerContainer.classList.contains('hint-opened') === true){
+                    answerContainer.classList.toggle('hint-opened');
+                }else{
+                    //do nothing
+                };
+
+                //displays question answer
+                questionAnswer.innerText = selectedTheme[i].answer;
+
+                //displays question answer options
+                for (n in answerBtns){
+                    answerBtns[n].value = selectedTheme[i].options[n];
+
+                    //adds listens for click event
+                    answerBtns[n].onclick = (e) =>{
+
+            
+                        if (counter.classList.contains('counting') === false){
+                            //initiate count down
+                            timeClass.countDown(time);
+                        };
+
+                        //catch button value
+                        let thisValue = e.target.value.toLowerCase();
+                        let thisAnswer = selectedTheme[i].answer.toLowerCase();
+
+                        //check if button value matches question answer
+                        if (thisValue === thisAnswer){
+                            points[i] = 1;
+                        }
+                        else{
+
+                            //check if question has been answered
+                            if (points[i] === 1){
+                                //removes value for an incorrect selection
+                                delete points[i];
+                            }
+                            else{
+                                //do nothing
+                            }
+                        }
+
+                        if (i <= themeLength){
+
+                            //changes question 
+                            i += 1;
+
+                            //changes question
+                            questionPicker(i, theme);
+                        };
+                    };
+                };
+            }
+            else{
+                //calculates user's score
+                timeClass.mark();
+
+                //pause background music 
+                spotifyPlayer.pause();
+            }
+
+        })(i, theme);
+    };
+
+    //function for previous button
+    previousQuestn.onclick = () =>{
+
+        //get question number
+        var curQuestion = Number(questionNo.innerText) - 2;
+        
+        //checks if there is a valid previous question
+        if (curQuestion >= 0){
+
+            //go to previous question
+            questionPicker(curQuestion, theme);
+
+            if (counter.classList.contains('counting') === false){
+                //initiate count down
+                timeClass.countDown(time);
+            };
+            
+        }
+        else{
+            previousQuestn.setAttribute('disabled','disabled');
+        }
+    }
+
+    //function for next question button
+    nextQuestn.onclick = () =>{
+        //get question number
+        var nexQuestion = Number(questionNo.innerText);
+
+        //checks if there is a valid previous question
+        if(nexQuestion < questions.length){
+
+            //go to next question
+            questionPicker(nexQuestion, theme);
+
+            if (counter.classList.contains('counting') === false){
+                //initiate count down
+                timeClass.countDown(time);
+            };
+
+        }else{
+            //calculates user's score
+            timeClass.mark();
+        };
+    };
+
+    //class for restarting question
+    class destruction{
+        reset(){
+            //go to back to first question
+            questionPicker(0,theme);
+
+            //change point value
+            points = {};
+
+            //remove counting class on counter
+            counter.classList.remove('counting');
+
+            //removes display from score card
+            scoreCard.classList.remove('show-score');
+
+            //remove clastops scrolling for body
+            body.classList.remove('stop-scrolling');
+            body.removeAttribute('disabled');
+
+            //remove class that stops body scrolling 
+            mainBody.classList.remove('stop-body-scroll');
+
+            //changes counter inner text back to number
+            counter.innerText = time;
+
+            //changes start button attributes back to default
+            clickBtn.removeAttribute('disabled');
+            clickBtn.innerText = 'Start';
+
+            //restarts background music 
+            spotifyPlayer.play();       
+        };
+        themeChanger(){
+            this.reset();
+
+            //change sections display
+            themeSelectorWrapper.style.display = 'block';
+            questionBody.style.display = 'none';
+
+            //return to default
+            clickBtn.setAttribute('disabled','disabled');
+
+            //rests selected theme
+            selectedTheme = [];
+        }
+    }
+    
+    //resets assessment
+    restartBtn.onclick = () =>{
+        const rest = new destruction;
+        rest.reset();
+    };
+
+    //add click event to display developer profile card
+    seeDevBtn.onclick = (e) =>{
+
+        //removes display from score card
+        scoreCard.classList.remove('show-score');
+
+        //displays developer profile card
+        devCard.classList.add('show-score');
+    }
+
+    //takes user back to score card
+    backBtn.onclick = (e) =>{
+        //add display from score card
+        scoreCard.classList.add('show-score');
+
+        //removes display from developer profile card
+        devCard.classList.remove('show-score');
+    }
+
+    //return user to point of theme selection
+    chngThBtn.onclick = (e) =>{
+        const rest = new destruction;
+        rest.themeChanger();
+    }
+
+    //displays in question hint
+    hintBtn.onclick = (e) =>{
+        //adds display to hint container
+        hintContainer.classList.toggle('hint-opened');
+
+        //checks if anser box is open and closes it 
+        if (answerContainer.classList.contains('hint-opened') === true){
+            answerContainer.classList.toggle('hint-opened');
+        }else{
+            //do nothing
+        };
+
+        //check if counter has started
+        if (counter.classList.contains('counting') === false){
+
+            //initiate count down
+            timeClass.countDown(time);
+        };
+    }
+
+    //displays in question answe
+    answerBtn.onclick = (e) =>{
+
+        //reduces time by 10seconds
+        let newTime = Number(counter.innerText) - 10;
+
+        //check if counter has started
+        if (counter.classList.contains('counting') === false){
+
+            //initiate count down
+            timeClass.countDown(time);
+
+        }else{
+
+            if (!answerContainer.classList.contains('hint-opened')){
+                //checks to see if answer was opened and deducts point
+                //reduces time count down
+
+                timeClass.stopTimeout();
+                timeClass.countDown(newTime);
+            };
+
+        };
+
+        //adds display to answer container
+        answerContainer.classList.toggle('hint-opened');
+
+        //checks if hint box is open and closes it 
+        if(hintContainer.classList.contains('hint-opened') === true){
+            hintContainer.classList.toggle('hint-opened');
+        }else{
+            //do nothing
+        };
+         
+    };
+</script>
+</html>
