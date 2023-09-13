@@ -353,7 +353,7 @@
             width:100%;
             height:calc(100vh + 1rem);
             padding:1rem;
-            padding-top: calc(100vh - 80vh);
+            padding-top:5vh;
             margin: 0 auto;
             position:absolute;
             bottom:calc(0% - 1rem);
@@ -404,7 +404,8 @@
             text-align:center;
             border-radius:2rem 2rem 0 0;
             box-shadow: 0 0 2rem var(--shadow);
-            height:100%;
+            height:fit-content;
+            min-height:100%;
             display:flex;
             align-items:space-between;
             justify-content:center;
@@ -418,20 +419,27 @@
             align-items:center;
             align-items:center;
             justify-content:center;
-            gap:1.5rem;
+            gap:1rem;
         }
         .main-score{
-            width:fit-content;
-            aspect-ratio:1/1;
+            width:50%;
             background-color:var(--start-btn);
             color:var(--text-t-w);
-            padding:1.5rem;
+            padding-top:50%;
             box-sizing:content-box;
             border-radius:50%;
             display:flex;
             flex-wrap:wrap;
             align-items:center;
             justify-content:center;
+            position:relative;
+        }
+
+        .innerscore-wrapper{
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
         }
 
         .score-header{
@@ -480,7 +488,7 @@
             font-size:1rem;
             padding: 0.5rem 1rem;
             width:fit-content;
-            color:var(--text- t-b);
+            color:var(--text-t-b);
             border-radius:0.4rem;
             text-transform:capitalize;
             transition:all 0.5s;
@@ -500,28 +508,37 @@
             position:absolute;
             width:100vw;
             bottom:calc(0% - 1rem);
-            height:80vh;
+            height:90vh;
+            min-height:fit-content;
             transition:all 0.25s;
             animation: score-card 1s ease-in-out;
         }
 
         .main-developer-wrapper{
             display:flex;
-            flex-direction:column;
             flex-wrap:wrap;
             gap:1rem;
             justify-content:center;
             text-align:center;
+            align-items:center;
             background-color:var(--cards2);
             border-radius:2rem 2rem 0 0;
             box-shadow: 0 0 2rem var(--shadow);
             padding:1.5rem;
+            min-height:fit-content;
             height:100%;
         }
 
+        .main-profile, .works-button-wrapper{
+            flex:0 0 100%;
+            height: fit-content;
+            max-width:100%;
+            width:fit-content;
+        }
+
         .developer-pic{
-            max-height:25%;
-            width:auto;
+            max-width:25%;
+            height:auto;
             border-radius:0.5rem;
             border:0.2rem solid var(--shadow);
             margin:0 auto;
@@ -648,6 +665,11 @@
             HTML{
                 font-size: 12px;
             }
+
+            .main-score{
+                width:40%;
+                padding-top:40%;
+            }
         }
 
         @media only screen and (min-width: 575px) and (max-width: 1024px){
@@ -673,6 +695,11 @@
                 margin:4rem;
             }
 
+            .main-score{
+                width:25%;
+                padding-top:25%;
+            }
+
         }
 
         @media only screen and (max-width:574px){
@@ -683,6 +710,16 @@
                 margin:1rem auto;
             }
         }
+
+        @media only screen and (min-width:1024px){
+            .developer-pic{
+                max-width:50%;
+            }
+            .main-profile, .works-button-wrapper{
+                flex: 0 0 calc(50% - 0.5rem);
+            }
+        }
+
 
         @media only screen and (min-width:1025px){
             HTML{
@@ -711,6 +748,16 @@
                 padding:2rem;
             }
 
+            .main-score{
+                width:20%;
+                padding-top:20%;
+            }
+        }
+
+        @media only screen and (min-height:650px){
+           .developer-pic{
+                max-width:50%;
+            } 
         }
     </style>
 </head>
@@ -839,14 +886,17 @@
                     you scored
                 </h4>
                 <div class="main-score">
-                    <h1 id="score">
-                        34.r
-                    </h1>
+                    <div class="innerscore-wrapper">
+                        <h1 id="score">
+                        </h1>
+                        <br>
+                        <h6 id="actual-score"></h6>
+                    </div>
                 </div>
-                <!-- <p class="score-remark" style="text-transform:capitalize; color:var(--text-b-m)">
-                    you did 
+                <p class="score-remark" style="text-transform:capitalize; color:var(--text-b-m)">
+                    you 
                     <span id="score-remark"></span>
-                </p> -->
+                </p>
                 <p class="score-calc">
                     <span>note:</span>
                     score was calculated by dividing number of correct answers by time elapsed
@@ -863,9 +913,11 @@
     </section>
     <section class="developer-sec">
         <div class="main-developer-wrapper">
-            <img src="assets\emmanuel.jpg" alt="the developer" class="developer-pic">
-            <h1 class="developer-name">aberuagba emmanuel</h1>
-            <h6 class="developer-role">front-end developer <span class="roles-divider">|</span> UX/UI designer</h6>
+            <div class="main-profile">
+                <img src="assets\emmanuel.jpg" alt="the developer" class="developer-pic">
+                <h1 class="developer-name">aberuagba emmanuel</h1>
+                <h6 class="developer-role">front-end developer <span class="roles-divider">|</span> UX/UI designer</h6>
+            </div>
             <div class="works-button-wrapper">
                 <div class="previous-work">
                     <h1 class="header">other projects</h1>
@@ -922,7 +974,8 @@
     const updateReport = document.querySelector('.update-report');
     const pagination = document.querySelector('.pagination-content');
     const spotifyPlayer = document.querySelector('.embed-music');
-    const scoreRemark = document.getElementById('score-remark');
+    const scoreCardRemark = document.getElementById('score-remark');
+    const actualScore = document.getElementById('actual-score');
 
     //set default volume
     spotifyPlayer.volume = 0.2;
@@ -1015,7 +1068,7 @@
                     stop(spotifyPlayer);
 
                     //clear the nCount interval at the end of countdown
-                    clearInterval(this.timeFun);
+                    this.stopTimeout();
                     this.timeFun = null;
 
                     //adds final animation effect
@@ -1029,8 +1082,7 @@
 
 
                     //calculates user's score
-                    const showScore = new timer;
-                    showScore.mark();
+                    this.mark();
 
                     //changes start button inner text
                     clickBtn.innerText = 'Stopped';
@@ -1066,20 +1118,27 @@
                 //displays player's score 
                 playerScore.innerText = totalScore;
 
-                // //user score remark
-                // if (totalScore < 1){
-                //     scoreRemark.innerText = "i've seen better scores";
-                // }else if (2 > totalScore >= 1 ){
-                //     scoreRemark.innerText = 'you did good';
-                // }else if (totalScore > 2 ){
-                //     scoreRemark.innerText = 'you did very well, you must be smart';
-                // }
+                //display actual number of question user answered correctly
+                actualScore.innerText = `${point} out of 20`;
+
+                //user score remark
+                if (totalScore < 1){
+                    scoreCardRemark.innerText = "no sabi anything?";
+                }else if (2 > totalScore >= 1 ){
+                    scoreCardRemark.innerText = 'did okay';
+                }else if (totalScore >= 2 ){
+                    scoreCardRemark.innerText = 'did very well, you must be smart';
+                }
 
             }else{
                 //displays player's score 
                 playerScore.innerText = 0;
+
+                //display actual number of question user answered correctly
+                actualScore.innerText = `0 out of 20`;
+
                 //user score remark
-                // scoreRemark.innerText = "i've seen better scores";
+                scoreCardRemark.innerText = "no sabi anything?";
             }
 
             //display score card
