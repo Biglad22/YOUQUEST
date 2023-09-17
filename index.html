@@ -660,6 +660,45 @@
             visibility:hidden;
         }
 
+        /*css for music pausing button*/
+        #music-playing{
+            padding:1rem;
+            border-radius:0.5rem;
+            background-color:var(--text-b-l);
+            color:var(--text-w-m);
+            border:none;
+            margin-left:auto;
+            display:flex;
+            flex-wrap:wrap;
+            align-items:center;
+            gap:0.5rem;
+            text-transform:capitalize;
+        }
+
+        #music-playing .fi-rr-play{
+            display:none;
+            height:fit-content;
+        }
+
+        .music-paused .fi-rr-pause{
+            display:none !important;
+        }
+        .music-paused .fi-rr-play{
+            display:block !important;
+            height:fit-content;
+        }
+
+        /* button description */
+        .button-des{
+            display:none;
+            opacity:0;
+        }
+        #music-playing:hover .button-des{
+            display:block;
+            opacity:1;
+        }
+
+
         /* media queries for larger screens */
         @media only screen and (max-width:480px){
             HTML{
@@ -876,6 +915,15 @@
                     something goes here somehow
                 </p>
             </div>
+
+            <!-- music pause button -->
+            <button type="button" id="music-playing">
+                <i class="fi-rr-pause"></i>
+                <i class="fi-rr-play"></i>
+                <p class="button-des">
+                    pause music
+                </p>
+            </button>
         </main>
     </header>
 
@@ -930,7 +978,6 @@
             </div>
         </div>
     </section>
-    
 </body>
 <script src="questions.js"></script>
 <script>
@@ -976,7 +1023,7 @@
     const spotifyPlayer = document.querySelector('.embed-music');
     const scoreCardRemark = document.getElementById('score-remark');
     const actualScore = document.getElementById('actual-score');
-
+    const bckMusicBtn = document.getElementById('music-playing');
     //set default volume
     spotifyPlayer.volume = 0.2;
 
@@ -1446,6 +1493,9 @@
         themeChanger(){
             this.reset();
 
+            //stops background music 
+            stop(spotifyPlayer);
+
             //change sections display
             themeSelectorWrapper.style.display = 'block';
             questionBody.style.display = 'none';
@@ -1544,5 +1594,26 @@
         };
          
     };
+
+    //pauses or plays background music on click
+    bckMusicBtn.onclick = (e) => {
+        e.preventDefault();
+
+        //check if button playing or paused
+        if (bckMusicBtn.classList.contains('music-paused')){
+            spotifyPlayer.play();
+
+            //change button description
+            bckMusicBtn.querySelector('.button-des').textContent = 'pause music';
+        }else{
+            spotifyPlayer.pause();
+
+            //change button description
+            bckMusicBtn.querySelector('.button-des').textContent = 'play music';
+        }
+
+        //adds or removes paused class to button
+        bckMusicBtn.classList.toggle('music-paused');
+    }
 </script>
 </html>

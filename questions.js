@@ -38,7 +38,7 @@ const questions = [
     {
     'question':'What do the letters "GT" typically stand for in car model names?',
     'answer':'grand touring',
-    'options':['grand theft', 'gas turbine', 'grand touring', 'grand touring'],
+    'options':['grand theft', 'gas turbine', 'grand touring', 'grand tour'],
     'theme':'car',
     'hint':'Also known as a Gran Turismo vehicle.'
     },
